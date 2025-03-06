@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <!-- <br><br><br> -->
+        <div class="container dashboard-containe shadow">
+            <h2 class="text-center text-danger">Dashboard</h2>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card shadow m-1">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Add User</p>
+                            <a href="{{ url_for('new_user_page') }}">
+                            <i class="fa-solid fa-user fa-2x pb-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">User Report</p>
+                            <a href="{{url_for('user_report_page')}}">
+                                <i class="fa-solid fa-address-card fa-2x pb-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Add Booking</p>
+                            <a href="{{url_for('new_booking_page')}}">
+                                <i class="fa-solid fa-briefcase fa-2x pb-1"></i>
+                                </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Booking Report</p>
+                            <a href="{{ url_for('book_report_page') }}">
+                                <i class="fa-solid fa-calendar-check fa-2x pb-1"></i>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Add Connection</p>
+                            <a href="{{ url_for('new_connection_page') }}">
+                                <i class="fa-solid fa-users fa-2x pb-1"></i>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Add Branch</p>
+                            <a href="{{ url_for('new_branch_page') }}">
+                                <i class="fa-solid fa-city fa-2x pb-1"></i>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Branch Report</p>
+                            <a href="{{ url_for('branch_report_page') }}">
+                                <i class="fa-solid fa-clipboard-list fa-2x pb-1"></i><br>
+                                
+                           </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">My Account</p>
+                            <a href="{{ url_for('account_page')}}">
+                                <i class="fa-solid fa-cog fa-2x pb-1"></i>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow m-2">
+                        <div class="card-body text-center">
+                                <p class="text-secondary fw-bold">Change Password</p>
+                                <a href="{{ url_for('password_page')}}">
+                                <i class="fa-solid fa-key fa-2x pb-1"></i>
+                                
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow mt-2 mb-4">
+                        <div class="card-body text-center">
+                            <p class="text-secondary fw-bold">Logout</p>
+                            <a href="{{ url_for('logout') }}">
+                                <i class="fa-solid fa-sign-out-alt fa-2x pb-1"></i> 
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endblock %}
+

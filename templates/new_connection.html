@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}New Connection Report{% endblock %}
+
+{% block content %}
+        <!-- Form Container -->
+        <div class="row justify-content-center align-items-center box-shadow" >
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container p-4 border rounded shadow">
+                    <h3 class="mb-4 text-center text-danger">New Connection Entry Form</h3>
+                    <form method="POST" action="{{ url_for('new_connection') }}" id="connectionForm">
+                        <div class="mb-4 row">
+                            <label for="user_id" class="col-sm-3 col-form-label text-secondary">Select User</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="user_id" name="user_id">
+                                    <option value="">Select User</option>
+                                    {% for user in users %}
+                                        <option value="{{ user.user_id }}">{{ user.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p id="user-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="branch_id" class="col-sm-3 col-form-label text-secondary">Select Branch</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="branch_id" name="branch_id">
+                                    <option value="">Select Branch</option>
+                                    {% for branch in branches %}
+                                        <option value="{{ branch.branch_id }}">{{ branch.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p id="branch-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="conn_date" class="col-sm-3 col-form-label text-secondary">Connection Date</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control text-secondary" id="conn_date" name="conn_date">
+                                <p id="conn-date-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="total_cylindar" class="col-sm-3 col-form-label text-secondary">Total Cylinders</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control text-secondary" id="total_cylindar" name="total_cylindar" placeholder="Enter total cylinders">
+                                <p id="total-cylindar-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="total_cost" class="col-sm-3 col-form-label text-secondary">Total Cost</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control text-secondary" id="total_cost" name="total_cost" placeholder="Enter total cost">
+                                <p id="total-cost-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="full_address" class="col-sm-3 col-form-label text-secondary">Full Address</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control text-secondary" id="full_address" name="full_address" rows="3" placeholder="Enter full address"></textarea>
+                                <p id="address-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="description" class="col-sm-3 col-form-label text-secondary">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control text-secondary" id="description" name="description" rows="3" placeholder="Enter description"></textarea>
+                                <p id="description-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger me-2">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('connectionForm').addEventListener('submit', function(event) {
+            let isValid = true;
+            let firstInvalidField = null;
+
+            // Clear previous error highlights and messages
+            document.querySelectorAll('.form-control').forEach(field => field.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-message').forEach(error => error.textContent = "");
+
+            // Validate User Selection
+            const userId = document.getElementById('user_id');
+            const userError = document.getElementById('user-error');
+            if (userId.value === "") {
+                userId.classList.add('is-invalid');
+                userError.textContent = "Please select a user.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = userId;
+            }
+            
+            // Validate Branch Selection
+            const branchId = document.getElementById('branch_id');
+            const branchError = document.getElementById('branch-error');
+            if (branchId.value === "") {
+                branchId.classList.add('is-invalid');
+                branchError.textContent = "Please select a branch.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = branchId;
+            }
+            
+
+            // Validate Connection Date
+            const connDate = document.getElementById('conn_date');
+            const connDateError = document.getElementById('conn-date-error');
+            if (!connDate.value) {
+                connDate.classList.add('is-invalid');
+                connDateError.textContent = "Please enter the connection date.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = connDate;
+            }
+            else if (new Date(connDate.value) > new Date()) {
+                connDate.classList.add('is-invalid');
+                connDateError.textContent = "Connection date cannot be in the future.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = connDate;
+            }
+            
+
+            // Validate Total Cylinders
+            const totalCylindar = document.getElementById('total_cylindar');
+            const totalCylindarError = document.getElementById('total-cylindar-error');
+            if (!totalCylindar.value || totalCylindar.value <= 0) {
+                totalCylindar.classList.add('is-invalid');
+                totalCylindarError.textContent = "Please enter a valid number of cylinders.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = totalCylindar;
+            }
+            else if (totalCylindar.value > 100) {
+                totalCylindar.classList.add('is-invalid');
+                totalCylindarError.textContent = "Total cylinders cannot exceed 100.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = totalCylindar;
+            }
+            else if (totalCylindar.value % 1 !== 0) {
+                totalCylindar.classList.add('is-invalid');
+                totalCylindarError.textContent = "Total cylinders must be a whole number.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = totalCylindar;
+            }
+
+            // Validate Total Cost
+            const totalCost = document.getElementById('total_cost');
+            const totalCostError = document.getElementById('total-cost-error');
+            if (!totalCost.value || totalCost.value <= 0) {
+                totalCost.classList.add('is-invalid');
+                totalCostError.textContent = "Please enter a valid total cost.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = totalCost;
+            }
+
+            // Validate Full Address
+            const fullAddress = document.getElementById('full_address');
+            const addressError = document.getElementById('address-error');
+            if (!fullAddress.value.trim()) {
+                fullAddress.classList.add('is-invalid');
+                addressError.textContent = "Please enter a full address.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = fullAddress;
+            }
+            else if (fullAddress.value.length < 10) {
+                fullAddress.classList.add('is-invalid');
+                addressError.textContent = "Full address must be at least 10 characters long.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = fullAddress;
+            }
+            else if (fullAddress.value.length > 500) {
+                fullAddress.classList.add('is-invalid');
+                addressError.textContent = "Full address cannot exceed 500 characters.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = fullAddress;
+            }
+            else if (!/^[a-zA-Z0-9\s\.,-]+$/.test(fullAddress.value)) {
+                fullAddress.classList.add('is-invalid');
+                addressError.textContent = "Full address can only contain letters, numbers, spaces, and punctuation.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = fullAddress;
+            }
+            
+            // Validate Description
+            const description = document.getElementById('description');
+            const descriptionError = document.getElementById('description-error');
+            if (!description.value.trim()) {
+                description.classList.add('is-invalid');
+                descriptionError.textContent = "Please enter a description.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = description;
+            }
+            else if (description.value.length < 10) {
+                description.classList.add('is-invalid');
+                descriptionError.textContent = "Description must be at least 10 characters long.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = description;
+            }
+            else if (description.value.length > 500) {
+                description.classList.add('is-invalid');
+                descriptionError.textContent = "Description cannot exceed 500 characters.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = description;
+            }
+            else if (!/^[a-zA-Z0-9\s\.,-]+$/.test(description.value)) {
+                description.classList.add('is-invalid');
+                descriptionError.textContent = "Description can only contain letters, numbers, spaces, and punctuation.";
+                isValid = false;
+                if (!firstInvalidField) firstInvalidField = description;
+            }
+            // If any validation failed, prevent form submission
+            if (!isValid) {
+                event.preventDefault();
+                if (firstInvalidField) {
+                    firstInvalidField.focus();
+                }
+            }
+        });
+        </script>
+{% endblock %}

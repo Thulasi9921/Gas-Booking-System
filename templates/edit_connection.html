@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Connection{% endblock %}
+
+{% block content %}
+        <!-- Form Container -->
+        <div class="row justify-content-center align-items-center box-shadow" style="min-height: 100vh; padding-top: 80px; padding-bottom: 80px;">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container p-5 border rounded shadow">
+                    <h3 class="mb-4 text-center text-danger">Edit Connection</h3>
+                    <form method="post">
+                        <div class="mb-4 row">
+                            <label for="user_id" class="col-sm-3 col-form-label text-secondary">User ID</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="user_id" name="user_id" value="{{ connection.user_id }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="branch_id" class="col-sm-3 col-form-label text-secondary">Branch ID</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="branch_id" name="branch_id" value="{{ connection.branch_id }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="conn_date" class="col-sm-3 col-form-label text-secondary">Connection Date</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="conn_date" name="conn_date" value="{{ connection.conn_date }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="total_cylindar" class="col-sm-3 col-form-label text-secondary">Total Cylinders</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="total_cylindar" name="total_cylindar" value="{{ connection.total_cylindar }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="total_cost" class="col-sm-3 col-form-label text-secondary">Total Cost</label>
+                            <div class="col-sm-9">
+                                <input type="number" class="form-control" id="total_cost" name="total_cost" value="{{ connection.total_cost }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="full_address" class="col-sm-3 col-form-label text-secondary">Full Address</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="full_address" name="full_address" rows="3" required>{{ connection.full_address }}</textarea>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="description" class="col-sm-3 col-form-label text-secondary">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control" id="description" name="description" rows="3" required>{{ connection.description }}</textarea>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('connection_report_page') }}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

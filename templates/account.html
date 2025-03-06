@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}My Account{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center box-shadow">
+    <div class="col-md-8 col-lg-6">
+        <div class="login-container p-5 border rounded shadow">
+            <h3 class="mb-4 text-center text-danger">My Account</h3>
+            <form method="POST" action="{{ url_for('account_page') }}" enctype="multipart/form-data" id="accountForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label text-secondary">Username</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username" value="{{ session['username'] }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="loginId" class="form-label text-secondary">Login ID</label>
+                        <input type="text" class="form-control" id="loginId" name="loginId" placeholder="Enter your login ID" value="{{ session['admin_id'] }}" readonly>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="gender" class="form-label text-secondary">Gender</label>
+                        <select class="form-control" id="gender" name="gender">
+                            <option value="">Select</option>
+                            <option value="Male" {% if admin_info and admin_info.gender == 'Male' %}selected{% endif %}>Male</option>
+                            <option value="Female" {% if admin_info and admin_info.gender == 'Female' %}selected{% endif %}>Female</option>
+                        </select>
+                        <p class="text-danger error-message" id="gender-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="mobile" class="form-label text-secondary">User Mobile</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile" placeholder="Enter your mobile number" value="{{ admin_info.mobile if admin_info else '' }}">
+                        <p class="text-danger error-message" id="mobile-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="dob" class="form-label text-secondary">Date of Birth</label>
+                        <input type="date" class="form-control" id="dob" name="dob" value="{{ admin_info.dob if admin_info else '' }}">
+                        <p class="text-danger error-message" id="dob-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="address1" class="form-label text-secondary">Address 1</label>
+                        <input type="text" class="form-control" id="address1" name="address1" placeholder="Enter your address" value="{{ admin_info.address1 if admin_info else '' }}">
+                        <p class="text-danger error-message" id="address1-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="address2" class="form-label text-secondary">Address 2</label>
+                        <input type="text" class="form-control" id="address2" name="address2" placeholder="Enter your address" value="{{ admin_info.address2 if admin_info else '' }}">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label text-secondary">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email" value="{{ admin_email.email if admin_email else '' }}">
+                        <p class="text-danger error-message" id="email-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="country" class="form-label text-secondary">Country</label>
+                        <select class="form-control" id="country" name="country">
+                            <option value="">Select Country</option>
+                        </select>
+                        <p class="text-danger error-message" id="country-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="state" class="form-label text-secondary">State</label>
+                        <select class="form-control" id="state" name="state">
+                            <option value="">Select State</option>
+                        </select>
+                        <p class="text-danger error-message" id="state-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="city" class="form-label text-secondary">City</label>
+                        <select class="form-control" id="city" name="city">
+                            <option value="">Select City</option>
+                        </select>
+                        <p class="text-danger error-message" id="city-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="photo" class="form-label text-secondary">Profile Photo</label>
+                        <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+                        {% if admin_info and admin_info.photo %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ admin_info.photo) }}" alt="Profile Photo" class="img-thumbnail mt-2" width="150">
+                        {% endif %}
+                    </div>
+                    <input type="hidden" id="country_name" name="country_name" value="{{ admin_info.country if admin_info else '' }}">
+                    <input type="hidden" id="state_name" name="state_name" value="{{ admin_info.state if admin_info else '' }}">
+                    <input type="hidden" id="city_name" name="city_name" value="{{ admin_info.city if admin_info else '' }}">
+                </div>
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancel</a>
+                    <button type="submit" class="btn btn-danger me-2">Save changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        fetchCountries().then(() => {
+            const countryName = document.getElementById("country_name").value;
+            const stateName = document.getElementById("state_name").value;
+            const cityName = document.getElementById("city_name").value;
+
+            if (countryName) {
+                const countrySelect = document.getElementById("country");
+                for (let i = 0; i < countrySelect.options.length; i++) {
+                    if (countrySelect.options[i].text === countryName) {
+                        countrySelect.selectedIndex = i;
+                        fetchStates(countrySelect.value).then(() => {
+                            if (stateName) {
+                                const stateSelect = document.getElementById("state");
+                                for (let i = 0; i < stateSelect.options.length; i++) {
+                                    if (stateSelect.options[i].text === stateName) {
+                                        stateSelect.selectedIndex = i;
+                                        fetchCities(stateSelect.value).then(() => {
+                                            if (cityName) {
+                                                const citySelect = document.getElementById("city");
+                                                for (let i = 0; i < citySelect.options.length; i++) {
+                                                    if (citySelect.options[i].text === cityName) {
+                                                        citySelect.selectedIndex = i;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                        });
+                                        break;
+                                    }
+                                }
+                            }
+                        });
+                        break;
+                    }
+                }
+            }
+        });
+
+        document.getElementById("country").addEventListener("change", function() {
+            fetchStates(this.value);
+            document.getElementById("country_name").value = this.options[this.selectedIndex].text;
+        });
+
+        document.getElementById("state").addEventListener("change", function() {
+            fetchCities(this.value);
+            document.getElementById("state_name").value = this.options[this.selectedIndex].text;
+        });
+
+        document.getElementById("city").addEventListener("change", function() {
+            document.getElementById("city_name").value = this.options[this.selectedIndex].text;
+        });
+    });
+
+    function fetchCountries() {
+        return fetch("/api/countries")
+        .then(response => response.json())
+        .then(data => {
+            const countrySelect = document.getElementById("country");
+            data.forEach(country => {
+                const option = document.createElement("option");
+                option.value = country.iso2;
+                option.textContent = country.name;
+                countrySelect.appendChild(option);
+            });
+        });
+    }
+
+    function fetchStates(countryIso) {
+        return fetch(`/api/countries/${countryIso}/states`)
+        .then(response => response.json())
+        .then(data => {
+            const stateSelect = document.getElementById("state");
+            stateSelect.innerHTML = '<option value="">Select State</option>';
+            data.forEach(state => {
+                const option = document.createElement("option");
+                option.value = state.iso2;
+                option.textContent = state.name;
+                stateSelect.appendChild(option);
+            });
+        });
+    }
+
+    function fetchCities(stateIso) {
+        const countryIso = document.getElementById("country").value;
+        return fetch(`/api/countries/${countryIso}/states/${stateIso}/cities`)
+        .then(response => response.json())
+        .then(data => {
+            const citySelect = document.getElementById("city");
+            citySelect.innerHTML = '<option value="">Select City</option>';
+            data.forEach(city => {
+                const option = document.createElement("option");
+                option.value = city.name;
+                option.textContent = city.name;
+                citySelect.appendChild(option);
+            });
+        });
+    }
+
+    document.getElementById("accountForm").addEventListener("submit", function(event) {
+        let isValid = true;
+        let firstInvalidField = null;
+
+        // Clear previous errors
+        document.querySelectorAll(".error-message").forEach(error => error.textContent = "");
+        document.querySelectorAll(".form-control").forEach(field => field.classList.remove("is-invalid"));
+
+        // Validate Gender
+        const gender = document.getElementById("gender");
+        const genderError = document.getElementById("gender-error");
+        if (gender.value === "") {
+            gender.classList.add("is-invalid");
+            genderError.textContent = "Please select a gender.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = gender;
+        }
+
+        // Validate Mobile
+        const mobile = document.getElementById("mobile");
+        const mobileError = document.getElementById("mobile-error");
+        const mobilePattern = /^[0-9]{10}$/;
+        
+        if (mobile.value.trim() === "") {
+            mobile.classList.add("is-invalid");
+            mobileError.textContent = "Please enter your mobile number.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = mobile;
+        }
+        else if (!mobilePattern.test(mobile.value)) {
+            mobile.classList.add("is-invalid");
+            mobileError.textContent = "Mobile number must be exactly 10 digits.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = mobile;
+        }
+
+        // Validate Email
+        const email = document.getElementById("email");
+        const emailError = document.getElementById("email-error");
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!emailPattern.test(email.value)) {
+            email.classList.add("is-invalid");
+            emailError.textContent = "Invalid email format.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = email;
+        }
+
+        // Validate Date of Birth
+        const dob = document.getElementById("dob");
+        const dobError = document.getElementById("dob-error");
+        if (!dob.value) {
+            dob.classList.add("is-invalid");
+            dobError.textContent = "Please enter your date of birth.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = dob;
+        } else if (dob.value > new Date().toISOString().split("T")[0]) {
+            dob.classList.add("is-invalid");
+            dobError.textContent = "Date of birth cannot be in the future.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = dob;
+        }
+
+        // Validate Address 1
+        const address1 = document.getElementById("address1");
+        const address1Error = document.getElementById("address1-error");
+        if (!address1.value.trim()) {
+            address1.classList.add("is-invalid");
+            address1Error.textContent = "Address cannot be empty.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = address1;
+        }
+
+        // Validate Country
+        const country = document.getElementById("country");
+        const countryError = document.getElementById("country-error");
+        if (country.value === "") {
+            country.classList.add("is-invalid");
+            countryError.textContent = "Please select a country.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = country;
+        }
+
+        // Validate State
+        const state = document.getElementById("state");
+        const stateError = document.getElementById("state-error");
+        if (state.value === "") {
+            state.classList.add("is-invalid");
+            stateError.textContent = "Please select a state.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = state;
+        }
+
+        // Validate City
+        const city = document.getElementById("city");
+        const cityError = document.getElementById("city-error");
+        if (city.value === "") {
+            city.classList.add("is-invalid");
+            cityError.textContent = "Please select a city.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = city;
+        }
+
+        // If validation fails, prevent form submission and focus on the first invalid field
+        if (!isValid) {
+            event.preventDefault();
+            if (firstInvalidField) {
+                firstInvalidField.focus();
+            }
+        }
+    });
+</script>
+{% endblock %}

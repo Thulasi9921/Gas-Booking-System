@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}View Booking{% endblock %}
+
+{% block content %}
+<!-- Booking Details Container -->
+<div class="row justify-content-center align-items-center box-shadow">
+    <div class="col-md-8 col-lg-6">
+        <div class="details-container p-4 border rounded shadow">
+            <h3 class="mb-4 text-center text-danger">Booking Details</h3>
+            <div class="mb-4">
+                <strong>Booking ID:</strong> {{ booking.booking_id }}
+            </div>
+            <div class="mb-4">
+                <strong>User Name:</strong> {{ booking.user_name }}
+            </div>
+            <div class="mb-4">
+                <strong>Mobile:</strong> {{ booking.mobile }}
+            </div>
+            <div class="mb-4">
+                <strong>Booking Date:</strong> {{ booking.booking_date }}
+            </div>
+            <div class="mb-4">
+                <strong>Delivery Date:</strong> {{ booking.delivery_date }}
+            </div>
+            <div class="mb-4">
+                <strong>Amount:</strong> {{ booking.amount }}
+            </div>
+            <div class="mb-4">
+                <strong>Description:</strong> {{ booking.description }}
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('book_report_page') }}" class="btn btn-secondary">Back to Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}New Booking{% endblock %}
+
+{% block content %}
+        <!-- Form Container -->
+        <div class="row justify-content-center align-items-center box-shadow" >
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container p-4 border rounded shadow">
+                    <h3 class="mb-4 text-center text-danger">New Booking Entry Form</h3>
+                    <form method="POST" action="{{ url_for('new_booking') }}" id="bookingForm">
+                        <div class="mb-4 row">
+                            <label for="user_id" class="col-sm-3 col-form-label text-secondary">Select User</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="user_id" name="user_id">
+                                    <option value="">Select User</option>
+                                    {% for user in users %}
+                                        <option value="{{ user.user_id }}">{{ user.name }}</option>
+                                    {% endfor %}
+                                </select>
+                                <p id="user-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="booking_date" class="col-sm-3 col-form-label text-secondary">Booking Date</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control text-secondary" id="booking_date" name="booking_date">
+                                <p id="booking-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="delivery_date" class="col-sm-3 col-form-label text-secondary">Delivery Date</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control text-secondary" id="delivery_date" name="delivery_date">
+                                <p id="delivery-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="amount" class="col-sm-3 col-form-label text-secondary">Booking Amount</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control text-secondary" id="amount" name="amount" placeholder="Enter booking amount">
+                                <p id="amount-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="description" class="col-sm-3 col-form-label text-secondary">Description</label>
+                            <div class="col-sm-9">
+                                <textarea class="form-control text-secondary" id="description" name="description" rows="3" placeholder="Enter description"></textarea>
+                                <p id="description-error" class="text-danger error-message"></p>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger me-2">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.getElementById('bookingForm').addEventListener('submit', function(event) {
+                let isValid = true;
+                let firstInvalidField = null;
+        
+                // Clear previous error highlights and messages
+                document.querySelectorAll('.form-control').forEach(field => field.classList.remove('is-invalid'));
+                document.querySelectorAll('.error-message').forEach(error => error.textContent = "");
+        
+                // Validate User Selection
+                const userId = document.getElementById('user_id');
+                const userError = document.getElementById('user-error');
+                if (userId.value === "") {
+                    userId.classList.add('is-invalid');
+                    userError.textContent = "Please select a user.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = userId;
+                }
+        
+                // Validate Booking Date
+                const bookingDate = document.getElementById('booking_date');
+                const bookingError = document.getElementById('booking-error');
+                const today = new Date().toISOString().split("T")[0]; 
+                if (!bookingDate.value) {
+                    bookingDate.classList.add('is-invalid');
+                    bookingError.textContent = "Please enter a booking date.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = bookingDate;
+                } else if (bookingDate.value > today) {
+                    bookingDate.classList.add('is-invalid');
+                    bookingError.textContent = "Booking date cannot be in the future.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = bookingDate;
+                }
+        
+                // Validate Delivery Date
+                const deliveryDate = document.getElementById('delivery_date');
+                const deliveryError = document.getElementById('delivery-error');
+                if (!deliveryDate.value) {
+                    deliveryDate.classList.add('is-invalid');
+                    deliveryError.textContent = "Please enter a delivery date.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = deliveryDate;
+                } 
+                else if (deliveryDate.value <= bookingDate.value) {
+                    deliveryDate.classList.add('is-invalid');
+                    deliveryError.textContent = "Delivery date must be after the booking date.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = deliveryDate;
+                }
+        
+                // Validate Booking Amount
+                const amount = document.getElementById('amount');
+                const amountError = document.getElementById('amount-error');
+                if (!amount.value || amount.value <= 0) {
+                    amount.classList.add('is-invalid');
+                    amountError.textContent = "Please enter a valid booking amount.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = amount;
+                }
+                else if (amount.value > 100000) {
+                    amount.classList.add('is-invalid');
+                    amountError.textContent = "Booking amount cannot exceed 100,000.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = amount;
+                }
+                else if (amount.value < 1000) {
+                    amount.classList.add('is-invalid');
+                    amountError.textContent = "Booking amount must be at least 1000.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = amount;
+                }
+                else if (!/^\d{1,6}(\.\d{1,2})?$/.test(amount.value)) {
+                    amount.classList.add('is-invalid');
+                    amountError.textContent = "Booking amount must be a number with up to 2 decimal places.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = amount;
+                }
+                
+        
+                // Validate Description
+                const description = document.getElementById('description');
+                const descriptionError = document.getElementById('description-error');
+                if (!description.value.trim()) {
+                    description.classList.add('is-invalid');
+                    descriptionError.textContent = "Please enter a description.";
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = description;
+                }
+        
+                // If any validation fails, prevent form submission
+                if (!isValid) {
+                    event.preventDefault();
+                    if (firstInvalidField) {
+                        firstInvalidField.focus();
+                    }
+                }
+            });
+        </script>
+
+{% endblock %}

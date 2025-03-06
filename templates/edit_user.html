@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Edit User{% endblock %}
+
+{% block content %}
+        <!-- Form Container -->
+        <div class="row justify-content-center align-items-center box-shadow">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container p-5 border rounded shadow">
+                    <h3 class="mb-4 text-center text-danger">Edit User</h3>
+                    <form method="post">
+                        <div class="mb-4 row">
+                            <label for="name" class="col-sm-3 col-form-label text-secondary">Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" value="{{ user.name }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="email" class="col-sm-3 col-form-label text-secondary">Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="email" name="email" value="{{ user.email }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="gender" class="col-sm-3 col-form-label text-secondary">Gender</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="gender" name="gender" value="{{ user.gender }}" required>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="dob" class="col-sm-3 col-form-label text-secondary">Date of Birth</label>
+                            <div class="col-sm-9">
+                                <input type="date" class="form-control" id="dob" name="dob" value="{{ user.dob }}" required>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('user_report_page') }}" class="btn btn-secondary">Cancel</a>
+                            <button type="submit" class="btn btn-danger">Save changes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+{% endblock %}

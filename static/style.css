@@ -1,0 +1,133 @@
+/* Add linear gradient background to the page */
+
+ body{
+    color: black;
+ }
+
+/* Navbar styling */
+ .nav-link{
+    color: #fff !important;
+    background-color:  #533f6a;
+    padding: 5px;
+ }
+
+ .nav-link a{
+    color:  #fff !important;
+ }
+
+.nav-item .dropdown-menu {
+    background-color: #533f6a;
+    border: none;
+    border-radius: 0;
+}
+
+.nav-item .dropdown-menu .dropdown-item {
+    color: #fff;
+}
+
+.nav-item .dropdown-menu .dropdown-item:hover {
+    background-color: #f16b32;
+    color: #fff;
+}
+
+/* Carousel styling */
+.carousel-inner img {
+    height: 400px;
+    object-fit: cover;
+}
+
+/* Feature box styling */
+.feature-box {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px);
+}
+.about-section {
+    background: rgba(255, 255, 255, 0.9);
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: black;
+    margin-top: 20px;
+}
+
+footer {
+    background-color: #533f6a;
+    color: #fff !important;  
+    width: 100%;
+    /* position: fixed; */
+    /* left: 0; */
+    /* bottom: 0; */
+    text-align: center;
+}
+
+/* footer p{
+    margin: 0;
+} */
+.text-center {
+    color: #333;
+}
+.login-container {
+    background: rgba(255, 255, 255, 0.9); /* Slightly transparent background */
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+   
+    /* width: 100%;
+    max-width: 400px; */
+    color: black;
+}
+.login-container h1 {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+.dashboard-container {
+    background: rgba(255, 255, 255, 0.9); 
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    width: 100%;
+    color: black;
+}
+.dashboard-container h2 {
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+}
+.dashboard-container .card {
+    margin-bottom: 20px;
+}
+
+.dashboard-button{
+    background-color: #f16b32;
+    color: #fff;
+    border:0px;
+    border-radius: 10px;
+    padding: 10px;
+}
+.btn-primary {
+    background-color: #533f6a;
+    border-color: #533f6a;
+}
+.full-height {
+    height: 100vh; /* Full viewport height */
+    display: flex;
+    justify-content: flex-end; /* Push content to the bottom */
+    align-items: center; /* Vertically center the form */
+}
+.drop{
+    color:black;
+}
+
+

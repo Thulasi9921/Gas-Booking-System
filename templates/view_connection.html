@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}View Connection{% endblock %}
+
+{% block content %}
+        <!-- Connection Details Container -->
+        <div class="row justify-content-center align-items-center box-shadow" style="min-height: 100vh; padding-top: 80px; padding-bottom: 80px;">
+            <div class="col-md-8 col-lg-6">
+                <div class="details-container p-4 border rounded">
+                    <h1 class="mb-4 text-center">Connection Details</h1>
+                    <div class="mb-4">
+                        <strong>Connection ID:</strong> {{ connection.conn_id }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>User Name:</strong> {{ connection.user_name }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Branch Name:</strong> {{ connection.branch_name }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Connection Date:</strong> {{ connection.conn_date }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Total Cylinders:</strong> {{ connection.total_cylindar }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Total Cost:</strong> {{ connection.total_cost }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Full Address:</strong> {{ connection.full_address }}
+                    </div>
+                    <div class="mb-4">
+                        <strong>Description:</strong> {{ connection.description }}
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('connection_report_page') }}" class="btn btn-secondary">Back to Report</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

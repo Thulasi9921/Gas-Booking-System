@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+<div class="row justify-content-center align-items-center  page-container box-shadow m-2">
+    <div class="col-md-6 col-lg-4">
+        <div class="shadow-effect shadow p-4">
+            <h3 class="text-center text-danger">Login</h3>
+            {% if error %}
+                <div class="alert alert-danger text-center">{{ error }}</div>
+            {% endif %}
+            <form id="loginForm" action="{{ url_for('login') }}" method="post" enctype="multipart/form-data">
+                <div class="mb-3">
+                    
+                    <label for="username" class="form-label text-secondary">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Enter your username">
+                    <p class="text-danger error-message" id="old-password-error"></p>
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label text-secondary">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password">
+                    <p class="text-danger error-message" id="new-password-error"></p>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Login</button>
+                <p class="mt-3 text-secondary">You have no Account? <a href="{{ url_for('registration') }}" class="link_1">Register here</a></p>
+                <p class="text-center"><a href="{{ url_for('forgot_pswd') }}" class="link_1">Forgot Password</a></p>
+            </form>
+        </div>
+    </div>
+</div>
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        let isValid = true;
+        let firstInvalidField = null;
+    
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(error => error.textContent = "");
+        document.querySelectorAll('.form-control').forEach(field => field.classList.remove('is-invalid'));
+    
+        // Validate Username
+        const username = document.getElementById('username');
+        const usernameError = document.getElementById('old-password-error'); // Corrected ID
+        if (!username.value.trim()) {
+            username.classList.add('is-invalid');
+            usernameError.textContent = "Please enter your username.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = username;
+        }
+        
+    
+        // Validate Password
+        const password = document.getElementById('password');
+        const passwordError = document.getElementById('new-password-error'); // Corrected ID
+        if (!password.value.trim()) {
+            password.classList.add('is-invalid');
+            passwordError.textContent = "Please enter your password.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = password;
+        }
+    
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+            if (firstInvalidField) {
+                firstInvalidField.focus();
+            }
+        }
+    });
+</script>
+{% endblock %}

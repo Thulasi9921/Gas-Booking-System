@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Registration{% endblock %}
+
+{% block content %}
+        <div class="row justify-content-center align-items-center box-shadow">
+            <div class="col-sm-6 col-lg-4">
+                <div class="login-container mt-4 shadow p-5">
+                    <h3 class="text-center text-danger">Admin Registration</h3>
+                    <form id="registrationForm" action="{{ url_for('registration') }}" method="POST">
+                        <div>{{msg}}</div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label text-secondary">Username</label>
+                            <input type="text" class="form-control" id="username" placeholder="Enter username" name="username">
+                            <div class="invalid-feedback">Please enter a valid username.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label text-secondary">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter email" name="email">
+                            <div class="invalid-feedback">Please enter a valid email address.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password" placeholder="Enter password" name="password">
+                            <div class="invalid-feedback">Please enter a valid password.</div>
+                        </div>
+                        <!-- <div class="mb-3">
+                            <label for="created_at" class="form-label">Created_at</label>
+                            <input type="date" class="form-control" id="created_at" placeholder="Enter a Date" name="created_at">
+                            <p id="createdError" class="text-danger"></p>
+                        </div> -->
+                        <button type="submit" class="btn btn-danger w-100">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+<script>
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+        let isValid = true;
+
+        // Clear previous error highlights
+        const fields = document.querySelectorAll('.form-control');
+        fields.forEach(field => field.classList.remove('is-invalid'));
+
+        // Validate Username
+        const username = document.getElementById('username');
+        if (username.value.trim() === '') {
+            username.classList.add('is-invalid');
+            isValid = false;
+        }
+        
+         else if (username.value.trim().length < 3 || username.value.trim().length > 20 || !/^[a-zA-Z]+$/.test(username.value)) {
+            username.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // Validate Email
+        const email = document.getElementById('email');
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (!emailPattern.test(email.value) || email.value.trim() === '' || email.value.trim().length < 5) {
+            email.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // Validate Password
+        const password = document.getElementById('password');
+        if (password.value.length < 6 || password.value.length > 20 || !/[!@#$%^&*(),.?":{}|<>]/.test(password.value) || !/[0-9]/.test(password.value) || !/[a-z]/.test(password.value) || !/[A-Z]/.test(password.value) || !/[^a-zA-Z0-9]/.test(password.value) || password.value.trim() === '') {
+            password.classList.add('is-invalid');
+            isValid = false;
+        }
+
+        // If any validation failed, prevent form submission
+        if (!isValid) {
+            event.preventDefault(); // Prevent form submission
+        }
+    });
+</script>
+{% endblock %}
+
+

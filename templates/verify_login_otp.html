@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Verify OTP{% endblock %}
+
+{% block content %}
+<div class="d-flex  justify-content-center full-height page-container">
+    <div class="col-md-6 col-lg-4">
+        <div class="shadow-effect p-4">
+            <h3 class="text-center mb-4 text-danger">Verify OTP</h3>
+            {% if error %}
+                <div class="alert alert-danger text-center">{{ error }}</div>
+            {% endif %}
+            <form method="POST" action="{{ url_for('verify_login_otp') }}" id="verifyOtpForm">
+                <div class="mb-3">
+                    <label for="otp" class="form-label">OTP</label>
+                    <input type="text" class="form-control" id="otp" name="otp" placeholder="Enter the OTP sent to your email">
+                    <p class="text-danger error-message" id="otp-error"></p>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Verify</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('verifyOtpForm').addEventListener('submit', function(event) {
+        let isValid = true;
+        let firstInvalidField = null;
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(error => error.textContent = "");
+        document.querySelectorAll('.form-control').forEach(field => field.classList.remove('is-invalid'));
+
+        // Validate OTP
+        const otp = document.getElementById('otp');
+        const otpError = document.getElementById('otp-error');
+        if (!otp.value.trim()) {
+            otp.classList.add('is-invalid');
+            otpError.textContent = "Please enter the OTP.";
+            isValid = false;
+            if (!firstInvalidField) firstInvalidField = otp;
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+            if (firstInvalidField) {
+                firstInvalidField.focus();
+            }
+        }
+    });
+</script>
+{% endblock %}

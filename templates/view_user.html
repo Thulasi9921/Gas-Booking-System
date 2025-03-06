@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}View User{% endblock %}
+
+{% block content %}
+<!-- User Details Container -->
+<div class="row justify-content-center align-items-center box-shadow">
+    <div class="col-md-8 col-lg-6">
+        <div class="details-container p-4 border rounded shadow">
+            <h3 class="mb-4 text-center text-danger">User Details</h3>
+            <div class="mb-4">
+                <strong>User ID:</strong> {{ user.user_id }}
+            </div>
+            <div class="mb-4">
+                <strong>Name:</strong> {{ user.name }}
+            </div>
+            <div class="mb-4">
+                <strong>Email:</strong> {{ user.email }}
+            </div>
+            <div class="mb-4">
+                <strong>Gender:</strong> {{ user.gender }}
+            </div>
+            <div class="mb-4">
+                <strong>Date of Birth:</strong> {{ user.dob }}
+            </div>
+            <div class="mb-4">
+                <strong>Mobile:</strong> {{ user.mobile }}
+            </div>
+            <div class="mb-4">
+                <strong>Address 1:</strong> {{ user.address1 }}
+            </div>
+            <!-- <div class="mb-4">
+                <strong>Address 2:</strong> {{ user.address2 }}
+            </div> -->
+            <div class="mb-4">
+                <strong>Country:</strong> {{ user.country }}
+            </div>
+            <div class="mb-4">
+                <strong>State:</strong> {{ user.state }}
+            </div>
+            <div class="mb-4">
+                <strong>City:</strong> {{ user.city }}
+            </div>
+            <div class="mb-4">
+                <strong>Profile Photo:</strong>
+                {% if user.picture %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ user.picture) }}" alt="Profile Photo" class="img-thumbnail mt-2" width="150">
+                {% else %}
+                    No photo available
+                {% endif %}
+            </div>
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('user_report_page') }}" class="btn btn-secondary">Back to Report</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

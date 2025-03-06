@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us{% endblock %}
+
+{% block content %}
+<div class="container d-flex flex-column align-items-center" style="min-height: 100vh; padding-top: 80px; padding-bottom: 80px;">
+    <h3 class="mb-4 text-center text-danger">Contact Us</h3>
+    <div class="row w-100 shadow p-5">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="contact-info">
+                <div class="mb-4 text-center">
+                    <i class="fa-solid fa-location-dot  text-danger mb-2"></i>
+                    <h4 class="fw-bold">Location</h4>
+                    <p class="text-secondary">123, 4th Cross, 5th Main, Bangalore</p>
+                </div>
+                <div class="mb-4 text-center">
+                    <i class="fa-solid fa-envelope  text-danger mb-2"></i>
+                    <h4 class="fw-bold">Email</h4>
+                    <p class="text-secondary">info@example.com</p>
+                </div>
+                <div class="mb-4 text-center">
+                    <i class="fa-solid fa-phone  text-danger mb-2"></i>
+                    <h4 class="fw-bold">Call</h4>
+                    <p class="text-secondary">9876543210</p>
+                </div>
+                <div class="mb-4">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d15439.537947123366!2d77.5963265!3d14.6624962!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1737535595503!5m2!1sen!2sin" width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="contact-form p-4 border rounded shadow">
+                <h4 class="mb-4 text-center text-danger">Send Us a Message</h4>
+                <form action="{{ url_for('contact_us') }}" method="post" id="contactForm">
+                    <div class="form-group mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+                        <p class="text-danger error-message" id="name-error"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                        <p class="text-danger error-message" id="email-error"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Enter subject">
+                        <p class="text-danger error-message" id="subject-error"></p>
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" name="message" rows="4" placeholder="Enter your message"></textarea>
+                        <p class="text-danger error-message" id="message-error"></p>
+                    </div>
+                    <button type="submit" class="btn btn-danger w-100">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+        let isValid = true;
+
+        // Clear previous error messages
+        document.querySelectorAll('.error-message').forEach(error => error.textContent = "");
+        document.querySelectorAll('.form-control').forEach(field => field.classList.remove('is-invalid'));
+
+        // Validate Name
+        const name = document.getElementById('name');
+        const nameError = document.getElementById('name-error');
+        if (!name.value.trim()) {
+            name.classList.add('is-invalid');
+            nameError.textContent = "Please enter your name.";
+            isValid = false;
+        }
+
+        // Validate Email
+        const email = document.getElementById('email');
+        const emailError = document.getElementById('email-error');
+        const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        if (!email.value.trim()) {
+            email.classList.add('is-invalid');
+            emailError.textContent = "Please enter your email.";
+            isValid = false;
+        } else if (!emailPattern.test(email.value)) {
+            email.classList.add('is-invalid');
+            emailError.textContent = "Please enter a valid email address.";
+            isValid = false;
+        }
+
+        // Validate Subject
+        const subject = document.getElementById('subject');
+        const subjectError = document.getElementById('subject-error');
+        if (!subject.value.trim()) {
+            subject.classList.add('is-invalid');
+            subjectError.textContent = "Please enter a subject.";
+            isValid = false;
+        }
+
+        // Validate Message
+        const message = document.getElementById('message');
+        const messageError = document.getElementById('message-error');
+        if (!message.value.trim()) {
+            message.classList.add('is-invalid');
+            messageError.textContent = "Please enter a message.";
+            isValid = false;
+        }
+
+        // Prevent form submission if validation fails
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

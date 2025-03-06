@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}New User{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center full-height page-container box-shadow">
+    <div class="col-md-8 col-lg-6">
+        <div class="shadow-effect p-5 border rounded form-container shadow">
+            <h3 class="mb-4 text-center text-danger">User Registration Form</h3>
+            <form method="POST" action="{{ url_for('new_user') }}" enctype="multipart/form-data">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="username" class="form-label text-secondary">Username</label>
+                        <input type="text" class="form-control" id="username" name="username"
+                            placeholder="Enter your username">
+                        <p class="text-danger error-message" id="username-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="password" class="form-label text-secondary">Password</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Enter your password">
+                        <p class="text-danger error-message" id="password-error"></p>
+                    </div>
+                    <!-- <div>
+                        <label for="user_id" class="form-label text-secondary"> User_ID</label>
+                        <input type="text" class="form-control" id="user_id" name="user_id" placeholder="Enter your user_id">
+                        <p class="text-danger error-message" id="username-error"></p>
+                    </div> -->
+                    <div class="col-md-6 mb-3">
+                        <label for="gender" class="form-label text-secondary">Gender</label>
+                        <select class="form-control text-secondary" id="gender" name="gender">
+                            <option value="">Select Gender</option>
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                        <p class="text-danger error-message" id="gender-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="email" class="form-label text-secondary">User Email</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email">
+                        <p class="text-danger error-message" id="email-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="mobile" class="form-label text-secondary">User Mobile</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile"
+                            placeholder="Enter your mobile number">
+                        <p class="text-danger error-message" id="mobile-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="dob" class="form-label text-secondary">Date of Birth</label>
+                        <input type="date" class="form-control text-secondary" id="dob" name="dob">
+                        <p class="text-danger error-message" id="dob-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="address1" class="form-label text-secondary">Address 1</label>
+                        <input type="text" class="form-control" id="address1" name="address1"
+                            placeholder="Enter your address">
+                        <p class="text-danger error-message" id="address-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="address2" class="form-label text-secondary">Address 2</label>
+                        <input type="text" class="form-control" id="address2" name="address2"
+                            placeholder="Enter your address">
+                    </div>
+                    <div class="col-md-6 mb-3"> 
+                        <label for="country" class="form-label text-secondary">Country</label>
+                        <select class="form-control" id="country" name="country">
+                            <option value="">Select Country</option>
+                        </select>
+                        <p class="text-danger error-message" id="country-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="state" class="form-label text-secondary">State</label>
+                        <select class="form-control" id="state" name="state">
+                            <option value="">Select State</option>
+                        </select>
+                        <p class="text-danger error-message" id="state-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="city" class="form-label text-secondary">City</label>
+                        <select class="form-control" id="city" name="city">
+                            <option value="">Select City</option>
+                        </select>
+                        <p class="text-danger error-message" id="city-error"></p>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="photo" class="form-label text-secondary">Profile Photo</label>
+                        <input type="file" class="form-control text-secondary" id="photo" name="photo" accept="image/*">
+                        {% if user_info and user_info.photo %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ user_info.photo) }}" alt="Profile Photo"
+                            class="img-thumbnail mt-2" width="150">
+                        {% endif %}
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger w-100">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        fetchCountries();
+
+        document.getElementById("country").addEventListener("change", function () {
+            fetchStates(this.value);
+        });
+
+        document.getElementById("state").addEventListener("change", function () {
+            fetchCities(this.value);
+        });
+
+        document.querySelector("form").addEventListener("submit", function (event) {
+            let isValid = true;
+            let firstInvalidField = null;
+
+            // Clear previous error messages
+            document.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+
+            // Username validation
+            let username = document.getElementById("username");
+            if (!username.value.trim()) {
+                isValid = false;
+                username.classList.add('is-invalid');
+                document.getElementById("username-error").textContent = "Please enter a username.";
+                if (!firstInvalidField) firstInvalidField = username;
+            }
+            else if (username.value.length < 3) {
+                isValid = false;
+                username.classList.add('is-invalid');
+                document.getElementById("username-error").textContent = "Username must be at least 3 characters.";
+                if (!firstInvalidField) firstInvalidField = username;
+            }
+            else if (username.value.length > 20) {
+                isValid = false;
+                username.classList.add('is-invalid');
+                document.getElementById("username-error").textContent = "Username must be at most 20 characters.";
+                if (!firstInvalidField) firstInvalidField = username;
+            }
+            else if (!/^[a-zA-Z_]+$/.test(username.value)) {
+                isValid = false;
+                username.classList.add('is-invalid');
+                document.getElementById("username-error").textContent = "Username must contain only letters.";
+                if (!firstInvalidField) firstInvalidField = username;
+            }
+
+            // Password validation
+            let password = document.getElementById("password");
+            if (password.value.trim() === "") {
+                isValid = false;
+                password.classList.add('is-invalid');
+                document.getElementById("password-error").textContent = "Please enter a password.";
+                if (!firstInvalidField) firstInvalidField = password;
+            }
+            else if (password.value.length < 6) {
+                isValid = false;
+                password.classList.add('is-invalid');
+                document.getElementById("password-error").textContent = "Password must be at least 6 characters.";
+                if (!firstInvalidField) firstInvalidField = password;
+            }
+            else if (!/[a-z]/.test(password.value) || !/[A-Z]/.test(password.value) || !/[0-9]/.test(password.value)) {
+                isValid = false;
+                password.classList.add('is-invalid');
+                document.getElementById("password-error").textContent = "Password must contain at least one uppercase letter, one lowercase letter, and one number.";
+                if (!firstInvalidField) firstInvalidField = password;
+            }
+
+            // Email validation
+            let email = document.getElementById("email");
+            let emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email.value)) {
+                isValid = false;
+                email.classList.add('is-invalid');
+                document.getElementById("email-error").textContent = "Please enter a valid email.";
+                if (!firstInvalidField) firstInvalidField = email;
+            }
+            else if (email.value.trim() === "") {
+                isValid = false;
+                email.classList.add('is-invalid');
+                document.getElementById("email-error").textContent = "Please enter an email.";
+                if (!firstInvalidField) firstInvalidField = email;
+            }
+
+            // Mobile number validation
+            let mobile = document.getElementById("mobile");
+            let mobilePattern = /^[0-9]{10}$/;
+            if (!mobilePattern.test(mobile.value)) {
+                isValid = false;
+                mobile.classList.add('is-invalid');
+                document.getElementById("mobile-error").textContent = "Please enter a valid 10-digit mobile number.";
+                if (!firstInvalidField) firstInvalidField = mobile;
+            }
+            else if (mobile.value.trim() === "") {
+                isValid = false;
+                mobile.classList.add('is-invalid');
+                document.getElementById("mobile-error").textContent = "Please enter a mobile number.";
+                if (!firstInvalidField) firstInvalidField = mobile;
+            }
+
+            // Gender validation
+            let gender = document.getElementById('gender');
+            if (!gender.value) {
+                isValid = false;
+                gender.classList.add('is-invalid');
+                document.getElementById("gender-error").textContent = "Please select Gender";
+                if (!firstInvalidField) firstInvalidField = gender;
+            }
+
+            // DOB validation
+            let dob = document.getElementById("dob");
+            if (!dob.value) {
+                isValid = false;
+                dob.classList.add('is-invalid');
+                document.getElementById("dob-error").textContent = "Please enter your date of birth.";
+                if (!firstInvalidField) firstInvalidField = dob;
+            }
+            else if (dob.value > new Date().toISOString().split("T")[0]) {
+                isValid = false;
+                dob.classList.add('is-invalid');
+                document.getElementById("dob-error").textContent = "Date of birth cannot be in the future.";
+                if (!firstInvalidField) firstInvalidField = dob;
+            }
+
+            // Address 1 validation
+            let address1 = document.getElementById("address1");
+            if (!address1.value.trim()) {
+                isValid = false;
+                address1.classList.add('is-invalid');
+                document.getElementById("address-error").textContent = "Please enter your address.";
+                if (!firstInvalidField) firstInvalidField = address1;
+            }
+
+            // Country validation
+            let country = document.getElementById("country");
+            if (!country.value) {
+                isValid = false;
+                country.classList.add('is-invalid');
+                document.getElementById("country-error").textContent = "Please select a country.";
+                if (!firstInvalidField) firstInvalidField = country;
+            }
+
+            // State validation
+            let state = document.getElementById("state");
+            if (!state.value) {
+                isValid = false;
+                state.classList.add('is-invalid');
+                document.getElementById("state-error").textContent = "Please select a state.";
+                if (!firstInvalidField) firstInvalidField = state;
+            }
+
+            // City validation
+            let city = document.getElementById("city");
+            if (!city.value) {
+                isValid = false;
+                city.classList.add('is-invalid');
+                document.getElementById("city-error").textContent = "Please select a city.";
+                if (!firstInvalidField) firstInvalidField = city;
+            }
+
+            if (!isValid) {
+                event.preventDefault();
+                if (firstInvalidField) {
+                    firstInvalidField.focus();
+                }
+            }
+        });
+    });
+
+    function fetchCountries() {
+        fetch("/api/countries")
+            .then(response => response.json())
+            .then(data => {
+                const countrySelect = document.getElementById("country");
+                data.forEach(country => {
+                    const option = document.createElement("option");
+                    option.value = country.iso2;
+                    option.textContent = country.name;
+                    countrySelect.appendChild(option);
+                });
+            });
+    }
+
+    function fetchStates(countryIso) {
+        fetch(`/api/countries/${countryIso}/states`)
+            .then(response => response.json())
+            .then(data => {
+                const stateSelect = document.getElementById("state");
+                stateSelect.innerHTML = '<option value="">Select State</option>';
+                data.forEach(state => {
+                    const option = document.createElement("option");
+                    option.value = state.iso2;
+                    option.textContent = state.name;
+                    stateSelect.appendChild(option);
+                });
+            });
+    }
+
+    function fetchCities(stateIso) {
+        const countryIso = document.getElementById("country").value;
+        fetch(`/api/countries/${countryIso}/states/${stateIso}/cities`)
+            .then(response => response.json())
+            .then(data => {
+                const citySelect = document.getElementById("city");
+                citySelect.innerHTML = '<option value="">Select City</option>';
+                data.forEach(city => {
+                    const option = document.createElement("option");
+                    option.value = city.name;
+                    option.textContent = city.name;
+                    citySelect.appendChild(option);
+                });
+            });
+    }
+</script>
+{% endblock %}

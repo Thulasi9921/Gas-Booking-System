@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+        <!-- Form Container -->
+        <div class="row justify-content-center align-items-center box-shadow">
+            <div class="col-md-8 col-lg-6">
+                <div class="form-container p-4 border rounded shadow">
+                    <h3 class="mb-4 text-center text-danger">Add New Branch</h3>
+                    <form method="POST" action="{{ url_for('new_branch') }}" id="branchForm" onsubmit="return validateForm()">
+                        <div class="mb-4 row">
+                            <label for="name" class="col-sm-3 col-form-label text-secondary">Branch Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="name" name="name" placeholder="Enter branch name">
+                                <div class="invalid-feedback" id="name-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="email" class="col-sm-3 col-form-label text-secondary">Branch Email</label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Enter branch email">
+                                <div class="invalid-feedback" id="email-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="phone" class="col-sm-3 col-form-label text-secondary">Branch Phone</label>
+                            <div class="col-sm-9">
+                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter branch phone">
+                                <div class="invalid-feedback" id="phone-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="country" class="col-sm-3 col-form-label text-secondary">Branch Country</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="country" name="country">
+                                    <option value="">Select Country</option>
+                                </select>
+                                <div class="invalid-feedback" id="country-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="state" class="col-sm-3 col-form-label text-secondary">Branch State</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="state" name="state">
+                                    <option value="">Select State</option>
+                                </select>
+                                <div class="invalid-feedback" id="state-error"></div>
+                            </div>
+                        </div>
+                        <div class="mb-4 row">
+                            <label for="city" class="col-sm-3 col-form-label text-secondary">Branch City</label>
+                            <div class="col-sm-9">
+                                <select class="form-control text-secondary" id="city" name="city">
+                                    <option value="">Select City</option>
+                                </select>
+                                <div class="invalid-feedback" id="city-error"></div>
+                            </div>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger me-2">Submit</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                fetchCountries();
+
+                document.getElementById("country").addEventListener("change", function() {
+                    fetchStates(this.value);
+                });
+
+                document.getElementById("state").addEventListener("change", function() {
+                    fetchCities(this.value);
+                });
+
+                document.getElementById("branchForm").addEventListener("submit", function(event) {
+                    if (!validateForm()) {
+                        event.preventDefault(); // Prevent form submission if validation fails
+                    }
+                });
+            });
+
+            function fetchCountries() {
+                fetch("/api/countries")
+                .then(response => response.json())
+                .then(data => {
+                    const countrySelect = document.getElementById("country");
+                    data.forEach(country => {
+                        const option = document.createElement("option");
+                        option.value = country.iso2;
+                        option.textContent = country.name;
+                        countrySelect.appendChild(option);
+                    });
+                });
+            }
+
+            function fetchStates(countryIso) {
+                fetch(`/api/countries/${countryIso}/states`)
+                .then(response => response.json())
+                .then(data => {
+                    const stateSelect = document.getElementById("state");
+                    stateSelect.innerHTML = '<option value="">Select State</option>';
+                    data.forEach(state => {
+                        const option = document.createElement("option");
+                        option.value = state.iso2;
+                        option.textContent = state.name;
+                        stateSelect.appendChild(option);
+                    });
+                });
+            }
+
+            function fetchCities(stateIso) {
+                const countryIso = document.getElementById("country").value;
+                fetch(`/api/countries/${countryIso}/states/${stateIso}/cities`)
+                .then(response => response.json())
+                .then(data => {
+                    const citySelect = document.getElementById("city");
+                    citySelect.innerHTML = '<option value="">Select City</option>';
+                    data.forEach(city => {
+                        const option = document.createElement("option");
+                        option.value = city.name;
+                        option.textContent = city.name;
+                        citySelect.appendChild(option);
+                    });
+                });
+            }
+
+            function validateForm() {
+                let isValid = true;
+                let firstInvalidField = null;
+
+                // Branch Name Validation
+                const nameField = document.getElementById("name");
+                const nameError = document.getElementById("name-error");
+                if (nameField.value === "") {
+                    nameError.textContent = "Enter a Branch Name";
+                    nameField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = nameField;
+                }
+                else if (!/^[A-Za-z ]{3,}$/.test(nameField.value)) {
+                    nameError.textContent = "Branch name must be at least 3 characters";
+                    nameField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = nameField;
+                } 
+                else if (nameField.value.length > 50) {
+                    nameError.textContent = "Branch name must be less than 50 characters";
+                    nameField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = nameField;
+                }
+                else {
+                    nameError.textContent = "";
+                    nameField.classList.remove("is-invalid");
+                }
+
+                // Email Validation
+                const emailField = document.getElementById("email");
+                const emailError = document.getElementById("email-error");
+                if (emailField.value === "") {
+                    emailError.textContent = "Enter a Branch Email";
+                    emailField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = emailField;
+                }
+                else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+                    emailError.textContent = "Enter a valid email address.";
+                    emailField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = emailField;
+                } else {
+                    emailError.textContent = "";
+                    emailField.classList.remove("is-invalid");
+                }
+
+                // Phone Validation
+                const phoneField = document.getElementById("phone");
+                const phoneError = document.getElementById("phone-error");
+                if (phoneField.value === "") {
+                    phoneError.textContent = "Enter a Branch Phone";
+                    phoneField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = phoneField;
+                }
+                else if (!/^\d{10}$/.test(phoneField.value)) {
+                    phoneError.textContent = "Enter a valid 10-digit phone number";
+                    phoneField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = phoneField;
+                }
+                else if (phoneField.value.length > 10) {
+                    phoneError.textContent = "Phone number must be 10 digits";
+                    phoneField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = phoneField;
+
+                }
+                 else {
+                    phoneError.textContent = "";
+                    phoneField.classList.remove("is-invalid");
+                }
+
+                // Country Validation
+                const countryField = document.getElementById("country");
+                const countryError = document.getElementById("country-error");
+                if (countryField.value === "") {
+                    countryError.textContent = "Please select a country";
+                    countryField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = countryField;
+                } else {
+                    countryError.textContent = "";
+                    countryField.classList.remove("is-invalid");
+                }
+
+                // State Validation
+                const stateField = document.getElementById("state");
+                const stateError = document.getElementById("state-error");
+                if (stateField.value === "") {
+                    stateError.textContent = "Please select a state";
+                    stateField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = stateField;
+                } else {
+                    stateError.textContent = "";
+                    stateField.classList.remove("is-invalid");
+                }
+
+                // City Validation
+                const cityField = document.getElementById("city");
+                const cityError = document.getElementById("city-error");
+                if (cityField.value === "") {
+                    cityError.textContent = "Please select a city";
+                    cityField.classList.add("is-invalid");
+                    isValid = false;
+                    if (!firstInvalidField) firstInvalidField = cityField;
+                } else {
+                    cityError.textContent = "";
+                    cityField.classList.remove("is-invalid");
+                }
+
+                // If validation fails, focus on the first invalid field
+                if (!isValid && firstInvalidField) {
+                    firstInvalidField.focus();
+                }
+
+                return isValid;
+            }
+        </script>
+{% endblock %}
